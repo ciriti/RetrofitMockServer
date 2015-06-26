@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">RetrofitMockServer</string>
+
+    <string name="mock_server">Would you use mock server?</string>
+    <string name="action_settings">Settings</string>
+</resources>
