@@ -32,3 +32,40 @@ First of all you should add in your gradle file the dependency to retrofit mock 
 ```gradle
 compile 'com.squareup.retrofit:retrofit-mock:1.9.0'
 ```
+now you shoud extend the interface where you've declared the service calls, suppose the following code is you interface
+```java
+public interface ApiService {
+
+    @Headers({
+            "User-Agent: Retrofit-Mock-Sample"
+    })
+    @GET("/2.2/users?site=stackoverflow")
+    public RespBean getUsers(@Query("pagesize") int numItems);
+
+    @Headers({
+            "User-Agent: Retrofit-Mock-Sample"
+    })
+    @GET("/2.2/users?site=stackoverflow")
+    public void getUsers(@Query("pagesize") int numItems, Callback<RespBean> callback);
+
+}
+```
+you shoud get a class like this:
+```java
+public class MockService implements  ApiService{
+
+    @Override
+    public RespBean getUsers(@Query("pagesize") int numItems) {
+        return new Gson().fromJson(DATA, RespBean.class);
+    }
+
+        @Override
+        public void getUsers(@Query("pagesize") int numItems, Callback<RespBean> callback) {
+                RespBean obj = new Gson().fromJson(DATA, RespBean.class);
+                Response response = new Response(Api.URL_ENDPOINT, 200, "nothing", Collections.EMPTY_LIST, new TypedByteArray("application/json", DATA.getBytes()));
+                callback.success(obj, response);
+        }
+
+        // ...
+}
+```
