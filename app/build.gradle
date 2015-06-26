@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'release'
+            keyPassword 'release'
+            storeFile file('release.keystore')
+            storePassword 'release'
+        }
+    }
     compileSdkVersion 21
     buildToolsVersion '21.1.1'
-
     defaultConfig {
         applicationId "ciriti.retrofitmockserver"
         minSdkVersion 14
@@ -15,10 +22,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
-
-    packagingOptions{
+    packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
 }
@@ -26,7 +33,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
-    provided  'org.projectlombok:lombok:1.16.4'
+    provided 'org.projectlombok:lombok:1.16.4'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.retrofit:retrofit-mock:1.9.0'

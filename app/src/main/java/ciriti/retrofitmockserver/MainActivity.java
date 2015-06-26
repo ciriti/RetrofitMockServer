@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import ciriti.retrofitmockserver.api.Api;
 import ciriti.retrofitmockserver.bean.RespBean;
 import rx.Observable;
@@ -81,5 +82,10 @@ public class MainActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread());
 
         return observable;
+    }
+
+    @OnClick(R.id.button)
+    public void click(){
+        executeCallWithRxAndroid(true);
     }
 }
