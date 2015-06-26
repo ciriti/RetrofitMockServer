@@ -10,6 +10,8 @@ Suppose you have built the following Api class,
 public class Api {
 
     public static final String URL_ENDPOINT = "https://api.stackexchange.com";
+    
+    public static String DATA = "YOU FAKE JSON";
 
     protected RestAdapter getAdapter(Endpoint endpoint, Client client){
         return new RestAdapter.Builder()
