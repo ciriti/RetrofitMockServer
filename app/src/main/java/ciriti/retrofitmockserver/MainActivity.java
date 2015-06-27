@@ -14,6 +14,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import ciriti.retrofitmockserver.api.Api;
 import ciriti.retrofitmockserver.bean.RespBean;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -24,7 +27,7 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity {
 
     @InjectView(R.id.resp)
-    TextView response;
+    TextView responseTv;
 
     @InjectView(R.id.switch1)
     SwitchCompat switchCompat;
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Toast.makeText(getApplicationContext(), "" + isChecked, Toast.LENGTH_SHORT).show();
-                response.setText("");
+                responseTv.setText("");
                 executeCallWithRxAndroid(isChecked);
             }
         });
@@ -60,7 +63,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onNext(RespBean respBean) {
                 String json = new Gson().toJson(respBean);
-                response.setText(json);
+                responseTv.setText(json);
+            }
+        });
+
+    }
+
+    public void executeCallWithRetrofitCallback(boolean isMock) {
+
+        Api.getInstance().stackExchangeService(true).getUsers(10, new Callback<RespBean>() {
+            @Override
+            public void success(RespBean respBean, Response response) {
+                String json = new Gson().toJson(respBean);
+                responseTv.setText(json);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
             }
         });
     }
@@ -71,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void call(Subscriber<? super RespBean> subscriber) {
                         try{
-                            subscriber.onNext(new Api().stackExchangeService(isMock).getUsers(10));
+                            subscriber.onNext(Api.getInstance().stackExchangeService(isMock).getUsers(10));
                             subscriber.onCompleted();
                         }catch (Exception e){
                             subscriber.onError(e);
@@ -86,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.button)
     public void click(){
-        executeCallWithRxAndroid(true);
+        responseTv.setText("");
+        executeCallWithRetrofitCallback(true);
     }
 }

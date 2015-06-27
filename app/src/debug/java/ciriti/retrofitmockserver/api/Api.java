@@ -14,25 +14,44 @@ public class Api {
 
     public static final String URL_ENDPOINT = "https://api.stackexchange.com";
 
-    protected RestAdapter getAdapter(Endpoint endpoint, Client client){
-        return new RestAdapter.Builder()
-                .setClient(client)
-                .setEndpoint(endpoint)
-                .build();
+    /**
+     * Singleton - object's creation at the same time of the class's initialization
+     */
+    private final static Api INSTANCE = new Api();
+
+    RestAdapter restAdapter;
+    ApiService service;
+    ApiService mockService;
+
+    private Api(){
+        this.restAdapter = getRestAdapter(getClient(), getEndpoint());
+        this.service = this.restAdapter.create(ApiService.class);
+        this.mockService = MockRestAdapter.from(this.restAdapter).create(ApiService.class, new MockService());
+    }
+
+    public static Api getInstance(){
+        return INSTANCE;
     }
 
     public ApiService stackExchangeService(boolean hasUseMock){
         if(hasUseMock)
-            return MockRestAdapter.from(getAdapter(getEndpoint(), getClient())).create(ApiService.class, new MockService());
-        return getAdapter(getEndpoint(), getClient()).create(ApiService.class);
+            return mockService;
+        return service;
     }
 
-    protected Endpoint getEndpoint(){
+    Endpoint getEndpoint(){
         return Endpoints.newFixedEndpoint(URL_ENDPOINT);
     }
 
-    protected Client getClient(){
+    Client getClient(){
         return new OkClient();
+    }
+
+    RestAdapter getRestAdapter(Client client, Endpoint endpoint){
+        return new RestAdapter.Builder()
+                .setClient(client)
+                .setEndpoint(endpoint)
+                .build();
     }
 
 }
