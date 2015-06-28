@@ -1,6 +1,6 @@
-# 1. Android - How create a mock server with Retrofit 
+# 1. Android - How emulate fake server's responses with mock server using Retrofit's MockRestAdapter 
 
-The purpose of this article is ONLY to show you how create a mock server with retrofit, if you need also an example of architecture you could take a glance to my article about DAGGER 2. Anyway this will be the start point for all other future project.  
+The purpose of this article is ONLY to show you how create a mock server with retrofit and emulate its responses, if you need also an example of architecture you could take a glance to my article about DAGGER 2. Anyway this will be the start point for all other future project.  
 
 When you are working on your android app could happen you need to test you server call but, how can you do that if the server apis aren't ready? 
 The answer is to create a mock server as following.
