@@ -13,15 +13,24 @@ public class Api {
     
     //...
 
-    protected RestAdapter getAdapter(Endpoint endpoint, Client client){
-        return new RestAdapter.Builder()
-                .setClient(client)
-                .setEndpoint(endpoint)
-                .build();
+    RestAdapter restAdapter;
+    ApiService service;
+    ApiService mockService;
+    
+    //..
+
+    private Api(){
+        this.restAdapter = getRestAdapter(getClient(), getEndpoint());
+        this.service = this.restAdapter.create(ApiService.class);
+        this.mockService = MockRestAdapter.from(this.restAdapter).create(ApiService.class, new MockService());
     }
 
-    public ApiService stackExchangeService(){
-        return getAdapter(getEndpoint(), getClient()).create(ApiService.class);
+    //..
+
+    public ApiService stackExchangeService(boolean hasUseMock){
+        if(hasUseMock)
+            return mockService;
+        return service;
     }
 
     //....
@@ -77,3 +86,24 @@ public class MockService implements  ApiService{
         // ...
 }
 ```
+
+Now all it's ready to be used. In your activity or where you want, to use your mock server is sufficent write the standard code to use Retrofit:
+1. Async way
+```java
+ Api.getInstance().stackExchangeService(isMock).getUsers(10, new Callback<RespBean>() {
+            @Override
+            public void success(RespBean respBean, Response response) {
+                //..
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                //..
+            }
+        });
+```
+2. sync way
+```java
+    Api.getInstance().stackExchangeService(isMock).getUsers(10)
+```
+You can see all code in the related src.
