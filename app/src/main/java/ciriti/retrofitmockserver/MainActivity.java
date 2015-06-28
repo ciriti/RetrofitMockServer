@@ -43,11 +43,17 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Toast.makeText(getApplicationContext(), "" + isChecked, Toast.LENGTH_SHORT).show();
                 responseTv.setText("");
-                executeCallWithRxAndroid(isChecked);
+                // this line uses RxAndroid to make a call
+//                executeCallWithRxAndroid(isChecked);
+                executeCallWithRetrofitCallback(isChecked);
             }
         });
     }
 
+    /**
+     * Service call using RxAndroid
+     * @param isMock
+     */
     public void executeCallWithRxAndroid(boolean isMock) {
         fetchUsers(isMock).subscribe(new Observer<RespBean>() {
             @Override
@@ -69,9 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Service call using retrofit callback
+     * @param isMock
+     */
     public void executeCallWithRetrofitCallback(boolean isMock) {
 
-        Api.getInstance().stackExchangeService(true).getUsers(10, new Callback<RespBean>() {
+        Api.getInstance().stackExchangeService(isMock).getUsers(10, new Callback<RespBean>() {
             @Override
             public void success(RespBean respBean, Response response) {
                 String json = new Gson().toJson(respBean);
@@ -84,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private Observable<RespBean> fetchUsers(final boolean isMock) {
         Observable<RespBean> observable = Observable
