@@ -56,15 +56,21 @@ you shoud get a class like this:
 ```java
 public class MockService implements  ApiService{
 
-    @Override
-    public RespBean getUsers(@Query("pagesize") int numItems) {
-        return new Gson().fromJson(DATA, RespBean.class);
-    }
+        public static final String DATA = "FAKE JSON";
+
+        @Override
+        public RespBean getUsers(@Query("pagesize") int numItems) {
+            return new Gson().fromJson(DATA, RespBean.class);
+        }
 
         @Override
         public void getUsers(@Query("pagesize") int numItems, Callback<RespBean> callback) {
                 RespBean obj = new Gson().fromJson(DATA, RespBean.class);
-                Response response = new Response(Api.URL_ENDPOINT, 200, "nothing", Collections.EMPTY_LIST, new TypedByteArray("application/json", DATA.getBytes()));
+                Response response = new Response(Api.URL_ENDPOINT,
+                        200, 
+                        "nothing", 
+                        Collections.EMPTY_LIST, 
+                        new TypedByteArray("application/json", DATA.getBytes()));
                 callback.success(obj, response);
         }
 
