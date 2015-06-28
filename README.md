@@ -1,8 +1,8 @@
 # 1. Android - How create a mock server with Retrofit 
 
-The meta of this project is to show you how build a mock server with retrofit.
+The purpose of this article is ONLY to show you how create a mock server with retrofit, if you need also an example of architecture you could take a glance to my article about DAGGER 2. Anyway this will be the start point for all other future project.  
 
-When you are working on your android app could happen you need to test you server call, but how can you do that if the server apis aren't ready? 
+When you are working on your android app could happen you need to test you server call but, how can you do that if the server apis aren't ready? 
 The answer is to create a mock server as following.
 
 Suppose you have built the following Api class, 
@@ -11,7 +11,7 @@ public class Api {
 
     public static final String URL_ENDPOINT = "https://api.stackexchange.com";
     
-    public static String DATA = "YOU FAKE JSON";
+    //...
 
     protected RestAdapter getAdapter(Endpoint endpoint, Client client){
         return new RestAdapter.Builder()
@@ -56,15 +56,21 @@ you shoud get a class like this:
 ```java
 public class MockService implements  ApiService{
 
-    @Override
-    public RespBean getUsers(@Query("pagesize") int numItems) {
-        return new Gson().fromJson(DATA, RespBean.class);
-    }
+        public static final String DATA = "FAKE JSON";
+
+        @Override
+        public RespBean getUsers(@Query("pagesize") int numItems) {
+            return new Gson().fromJson(DATA, RespBean.class);
+        }
 
         @Override
         public void getUsers(@Query("pagesize") int numItems, Callback<RespBean> callback) {
                 RespBean obj = new Gson().fromJson(DATA, RespBean.class);
-                Response response = new Response(Api.URL_ENDPOINT, 200, "nothing", Collections.EMPTY_LIST, new TypedByteArray("application/json", DATA.getBytes()));
+                Response response = new Response(Api.URL_ENDPOINT,
+                        200, 
+                        "nothing", 
+                        Collections.EMPTY_LIST, 
+                        new TypedByteArray("application/json", DATA.getBytes()));
                 callback.success(obj, response);
         }
 
